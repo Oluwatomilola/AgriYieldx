@@ -5,11 +5,11 @@ import BuyerDashboard from "./pages/BuyerDashboard";
 import Marketplace from "./pages/Marketplace";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import { ClientProviders } from "./context/WalletContext";
+import { AppProvider } from "./context/WalletContext";
 
 export default function App() {
   return (
-    <ClientProviders>
+    <AppProvider>
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
         {/* Navbar on all pages */}
         <Navbar />
@@ -34,6 +34,6 @@ export default function App() {
           </p>
         </footer>
       </div>
-    </ClientProviders>
+    </AppProvider>
   );
 }

@@ -1,111 +1,94 @@
-import { useEffect, useState, createContext, useContext } from 'react';
+import '@rainbow-me/rainbowkit/styles.css';
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  HederaSessionEvent,
-  HederaJsonRpcMethod,
-  DAppConnector,
-  HederaChainId,
-} from '@hashgraph/hedera-wallet-connect';
-import { LedgerId } from '@hashgraph/sdk';
+import { useEffect } from 'react';
+import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
-const queryClient = new QueryClient();
+const HEDERA_TESTNET_ID = 296;
+const HEDERA_TESTNET_HEX = '0x128';
 
-const metadata = {
-  name: 'AgriYieldX',
-  description: 'Decentralized Agricultural Market Place',
-  url: 'ur app image url',
-  icons: ['link to ur icon'],
+const hederaTestnet = {
+  id: HEDERA_TESTNET_ID,
+  name: 'Hedera Testnet',
+  nativeCurrency: { name: 'HBAR', symbol: 'HBAR', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://testnet.hashio.io/api'] },
+    public: { http: ['https://testnet.hashio.io/api'] },
+  },
+  blockExplorers: {
+    default: { name: 'Hashscan', url: 'https://hashscan.io/testnet' },
+  },
+  testnet: true,
 };
 
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
-const DAppConnectorContext = createContext(null);
-export const useDAppConnector = () => useContext(DAppConnectorContext);
+const config = getDefaultConfig({
+  appName: import.meta.env.VITE_APP_NAME ?? 'AgriYield Testnet',
+  projectId,
+  chains: [hederaTestnet],
+  ssr: false,
+});
 
+const queryClient = new QueryClient();
 
-export function ClientProviders({ children }) {
-  const [dAppConnector, setDAppConnector] = useState(null);
-  const [isReady, setIsReady] = useState(false);
-  const [userAccountId, setUserAccountId] = useState(null);
-  const [sessionTopic, setSessionTopic] = useState(null);
+function ChainSwitcher({ children }) {
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
 
   useEffect(() => {
-    if (!dAppConnector) return;
+    if (!isConnected || chainId === HEDERA_TESTNET_ID) return;
 
-
-    const connectorWithEvents = dAppConnector;
-    const subscription = connectorWithEvents.events$?.subscribe((event) => {
-      if (event.name === 'accountsChanged' || event.name === 'chainChanged') {
-        setUserAccountId(dAppConnector.signers?.[0]?.getAccountId().toString() ?? null);
-
-        if (event.data && event.data.topic) {
-          setSessionTopic(event.data.topic);
-        } else if (dAppConnector.signers?.[0]?.topic) {
-          setSessionTopic(dAppConnector.signers[0].topic);
+    const addAndSwitchChain = async () => {
+      try {
+        if (switchChain) {
+          switchChain({ chainId: HEDERA_TESTNET_ID });
         } else {
-          setSessionTopic(null);
+          await window.ethereum?.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: HEDERA_TESTNET_HEX,
+                chainName: 'Hedera Testnet',
+                rpcUrls: ['https://testnet.hashio.io/api'],
+                nativeCurrency: {
+                  name: 'HBAR',
+                  symbol: 'HBAR',
+                  decimals: 18,
+                },
+                blockExplorerUrls: ['https://hashscan.io/testnet'],
+              }
+            ]
+          });
+          
+          await window.ethereum?.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: HEDERA_TESTNET_HEX }],
+          });
         }
-      } else if (event.name === 'session_delete' || event.name === 'sessionDelete') {
-        setUserAccountId(null);
-        setSessionTopic(null);
+      } catch (error) {
+        console.error('Failed to add/switch to Hedera Testnet:', error);
       }
-    });
-
-    setUserAccountId(dAppConnector.signers?.[0]?.getAccountId().toString() ?? null);
-    if (dAppConnector.signers?.[0]?.topic) setSessionTopic(dAppConnector.signers[0].topic);
-    return () => subscription && subscription.unsubscribe();
-  }, [dAppConnector]);
-
-  const disconnect = async () => {
-    if (dAppConnector && sessionTopic) {
-      await dAppConnector.disconnect(sessionTopic);
-      setUserAccountId(null);
-      setSessionTopic(null);
-    }
-  };
-
-  const refresh = () => {
-    if (dAppConnector) {
-      setUserAccountId(dAppConnector.signers?.[0]?.getAccountId().toString() ?? null);
-      setSessionTopic(dAppConnector.signers?.[0]?.topic ?? null);
-    }
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-    async function init() {
-      const connector = new DAppConnector(
-        metadata,
-        LedgerId.TESTNET,
-        projectId,
-        Object.values(HederaJsonRpcMethod),
-        [HederaSessionEvent.ChainChanged, HederaSessionEvent.AccountsChanged],
-        [HederaChainId.Mainnet, HederaChainId.Testnet],
-      );
-      await connector.init();
-      if (isMounted) {
-        setDAppConnector(connector);
-        setIsReady(true);
-      }
-    }
-    init().catch(console.log);
-    return () => {
-      isMounted = false;
     };
-  }, []);
 
-  if (!isReady)
-    return (
-      <div style={{ color: 'white', textAlign: 'center', marginTop: '2rem' }}>
-        Loading wallet...
-      </div>
-    );
+    addAndSwitchChain();
+  }, [isConnected, chainId, switchChain]);
 
+  return <>{children}</>;
+}
+
+export function AppProvider({ children }) {
   return (
-    <DAppConnectorContext.Provider value={{ dAppConnector, userAccountId, sessionTopic, disconnect, refresh }}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <RainbowKitProvider>
+          <ChainSwitcher>
+            {children}
+          </ChainSwitcher>
+        </RainbowKitProvider>
       </QueryClientProvider>
-    </DAppConnectorContext.Provider>
+    </WagmiProvider>
   );
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 // import WalletContext from "../context/WalletContext";
 import FarmCard from "../components/FarmCard";
 import { contractService } from "../services/contractService";
-import { useDAppConnector } from "../context/WalletContext";
+import { useAccount } from 'wagmi';
 
 const demoFarms = [
   {
@@ -32,8 +32,7 @@ const demoFarms = [
 ];
 
 export default function Home() {
-  // const { connected } = useContext(WalletContext);
-  const { userAccountId } = useDAppConnector() ?? {};
+  const { address: userAccountId } = useAccount();
   const [farms, setFarms] = useState([]);
   // console.log("UserAccount", userAccountId);
 

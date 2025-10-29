@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import ListCard from "../components/ListCard";
 import { contractService } from "../services/contractService";
 import Sidebar from "../components/Sidebar";
-import { useDAppConnector } from "../context/WalletContext";
+import { useAccount } from 'wagmi';
 
 export default function BuyerDashboard() {
-  const { userAccountId } = useDAppConnector() ?? {};
+  const { address: userAccountId } = useAccount();
   const [listings, setListings] = useState([]);
 
   useEffect(() => {

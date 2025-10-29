@@ -3,7 +3,7 @@ import ListCard from "../components/ListCard";
 import ChatBox from "../components/Chatbox";
 import { contractService } from "../services/contractService";
 import { hcsService } from "../services/hcsService";
-import { useDAppConnector } from "../context/WalletContext";
+import { useAccount } from 'wagmi';
 
 const demoListings = [
   {
@@ -30,7 +30,7 @@ const demoListings = [
 ];
 
 export default function Marketplace() {
-  const { userAccountId } = useDAppConnector() ?? {};
+  const { address: userAccountId } = useAccount();
   const [listings, setListings] = useState([]);
   // const [messages, setMessages] = useState([]);
   const [showChat, setShowChat] = useState(false);

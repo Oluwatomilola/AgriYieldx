@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import FarmCard from "../components/FarmCard";
 import { contractService } from "../services/contractService";
 import Sidebar from "../components/Sidebar";
-import { useDAppConnector } from "../context/WalletContext";
+import { useAccount } from 'wagmi';
 
 export default function InvestorDashboard() {
-  const { userAccountId } = useDAppConnector() ?? {};
+  const { address: userAccountId } = useAccount();
   const [farms, setFarms] = useState([]);
 
   useEffect(() => {
