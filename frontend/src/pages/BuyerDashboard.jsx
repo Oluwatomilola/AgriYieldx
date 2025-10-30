@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ListCard from "../components/ListCard";
 import { contractService } from "../services/contractService";
-import Sidebar from "../components/Sidebar";
 import { useAccount } from 'wagmi';
 
 export default function BuyerDashboard() {
@@ -12,7 +11,7 @@ export default function BuyerDashboard() {
     if (userAccountId) {
       contractService.getListings().then(setListings);
     }
-  }, []);
+  }, [userAccountId]);
 
   const handlePurchase = async (listingId, quantity) => {
     try {
@@ -29,25 +28,31 @@ export default function BuyerDashboard() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-6 min-h-screen">
-      <Sidebar userType="buyer" />
-      <div>
-        <div className="rounded-2xl shadow-md bg-white dark:bg-gray-800 p-6">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Buyer Dashboard</h1>
-          {!userAccountId ? (
-            <p className="text-sm text-gray-700 dark:text-gray-400">Please connect your wallet to browse marketplace listings.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {listings.map((listing) => (
-                <ListCard
-                  key={listing.id}
-                  listing={listing}
-                  onBuy={(l) => handlePurchase(l.id, 1)}
-                />
-              ))}
+    <div className="bg-gray-100 min-h-screen">
+      <div className="container mx-auto px-6 py-12">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Buyer Dashboard</h1>
+        {!userAccountId ? (
+          <div className="text-center bg-white p-8 rounded-lg shadow-md">
+            <p className="text-lg text-gray-700">Please connect your wallet to browse the marketplace.</p>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-6">Marketplace Listings</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {listings.length > 0 ? (
+                listings.map((listing) => (
+                  <ListCard
+                    key={listing.id}
+                    listing={listing}
+                    onBuy={(l) => handlePurchase(l.id, 1)}
+                  />
+                ))
+              ) : (
+                <p>No listings available at the moment.</p>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

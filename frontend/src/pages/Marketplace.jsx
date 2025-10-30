@@ -32,7 +32,6 @@ const demoListings = [
 export default function Marketplace() {
   const { address: userAccountId } = useAccount();
   const [listings, setListings] = useState([]);
-  // const [messages, setMessages] = useState([]);
   const [showChat, setShowChat] = useState(false);
   const [activeOrder, setActiveOrder] = useState(null);
   const topicId = import.meta.env.VITE_HCS_TOPIC_ID;
@@ -48,12 +47,6 @@ export default function Marketplace() {
       }
     };
     load();
-
-    // if (topicId) {
-    //   hcsService.subscribeToTopic(topicId, (msg) => {
-    //     setMessages((prev) => [...prev, msg]);
-    //   });
-    // }
 
     return () => {
       mounted = false;
@@ -77,37 +70,41 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 space-y-4">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Marketplace</h1>
-        <div className="rounded-2xl shadow-md bg-white dark:bg-gray-800 p-6">
-          {!userAccountId ? (
-            <p className="text-sm text-gray-700 dark:text-gray-400">Please connect your wallet to access the marketplace.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {listings.map((listing) => (
-                <ListCard
-                  key={listing.id}
-                  listing={listing}
-                  onBuy={handleBuy}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="lg:col-span-1">
-        {showChat && (
-          <div className="space-y-3">
-            {activeOrder && (
-              <div className="rounded-2xl shadow-md bg-white dark:bg-gray-800 p-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Order Chat</h2>
-                <p className="text-sm text-gray-700 dark:text-gray-400">Discuss your order for <span className="font-medium">{activeOrder.name}</span>.</p>
+    <div className="bg-gray-100 min-h-screen">
+      <div className="container mx-auto px-6 py-12">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Marketplace</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            {!userAccountId ? (
+              <div className="text-center bg-white p-8 rounded-lg shadow-md">
+                <p className="text-lg text-gray-700">Please connect your wallet to access the marketplace.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                {listings.map((listing) => (
+                  <ListCard
+                    key={listing.id}
+                    listing={listing}
+                    onBuy={handleBuy}
+                  />
+                ))}
               </div>
             )}
-            <ChatBox topicId={topicId} signer={hashconnect} />
           </div>
-        )}
+          <div className="lg:col-span-1">
+            {showChat && (
+              <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                {activeOrder && (
+                  <div className="mb-4">
+                    <h2 className="text-2xl font-semibold text-gray-800">Order Chat</h2>
+                    <p className="text-gray-600">Discuss your order for <span className="font-medium">{activeOrder.name}</span>.</p>
+                  </div>
+                )}
+                <ChatBox topicId={topicId} />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

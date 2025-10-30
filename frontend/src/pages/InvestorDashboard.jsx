@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import FarmCard from "../components/FarmCard";
 import { contractService } from "../services/contractService";
-import Sidebar from "../components/Sidebar";
 import { useAccount } from 'wagmi';
 
 export default function InvestorDashboard() {
@@ -12,7 +11,7 @@ export default function InvestorDashboard() {
     if (userAccountId) {
       contractService.getFarms().then(setFarms);
     }
-  }, []);
+  }, [userAccountId]);
 
   const handleInvest = async (farmId, amount) => {
     try {
@@ -29,25 +28,31 @@ export default function InvestorDashboard() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-6 min-h-screen">
-      <Sidebar userType="investor" />
-      <div>
-        <div className="rounded-2xl shadow-md bg-white dark:bg-gray-800 p-6">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Investor Dashboard</h1>
-          {!userAccountId ? (
-            <p className="text-sm text-gray-700 dark:text-gray-400">Please connect your wallet to view available farms.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {farms.map((farm) => (
-                <FarmCard
-                  key={farm.id}
-                  farm={farm}
-                  onInvest={(f) => handleInvest(f.id, 1)}
-                />
-              ))}
+    <div className="bg-gray-100 min-h-screen">
+      <div className="container mx-auto px-6 py-12">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Investor Dashboard</h1>
+        {!userAccountId ? (
+          <div className="text-center bg-white p-8 rounded-lg shadow-md">
+            <p className="text-lg text-gray-700">Please connect your wallet to view available farms and manage your investments.</p>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-6">Available Farm Campaigns</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {farms.length > 0 ? (
+                farms.map((farm) => (
+                  <FarmCard
+                    key={farm.id}
+                    farm={farm}
+                    onInvest={(f) => handleInvest(f.id, 1)}
+                  />
+                ))
+              ) : (
+                <p>No farm campaigns available at the moment.</p>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
