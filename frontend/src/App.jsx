@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import FarmListing from "./pages/FarmListing";
 import Kyc from "./pages/Kyc";
+import OrderDetails from "./pages/OrderDetails";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/kyc" element={<Kyc />} />
+            <Route path="/order/:orderId" element={<OrderDetails />} />
           </Routes>
         </main>
         <Footer />

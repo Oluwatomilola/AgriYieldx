@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ListCard from "../components/ListCard";
-import ChatBox from "../components/Chatbox";
 import { contractService } from "../services/contractService";
-import { hcsService } from "../services/hcsService";
 import { useAccount } from 'wagmi';
 
 const demoListings = [
@@ -31,38 +30,32 @@ const demoListings = [
 
 export default function Marketplace() {
   const { address: userAccountId } = useAccount();
+  const navigate = useNavigate();
   const [listings, setListings] = useState([]);
-  const [showChat, setShowChat] = useState(false);
-  const [activeOrder, setActiveOrder] = useState(null);
-  const topicId = import.meta.env.VITE_HCS_TOPIC_ID;
 
   useEffect(() => {
-    let mounted = true;
-    const load = async () => {
+    async function loadListings() {
       try {
         const data = await contractService.getListings();
-        if (mounted) setListings(Array.isArray(data) && data.length ? data : demoListings);
+        setListings(Array.isArray(data) && data.length ? data : demoListings);
       } catch {
-        if (mounted) setListings(demoListings);
+        setListings(demoListings);
       }
-    };
-    load();
-
-    return () => {
-      mounted = false;
-    };
-  }, [topicId]);
+    }
+    loadListings();
+  }, []);
 
   const handleBuy = async (listing) => {
     try {
-      if (userAccountId) {
-        await contractService.purchase(listing.id, 1);
-      } else {
+      if (!userAccountId) {
         alert("Please connect your wallet before purchasing.");
         return;
       }
-      setActiveOrder(listing);
-      setShowChat(true);
+      const tx = await contractService.purchase(listing.id, 1);
+      const receipt = await tx.wait();
+      // This is a simplification. In a real app, you'd get the orderId from the event logs.
+      const orderId = receipt.logs[0].args[0]; 
+      navigate(`/order/${orderId}`);
     } catch (err) {
       console.error(err);
       alert("Purchase failed.");
@@ -73,38 +66,21 @@ export default function Marketplace() {
     <div className="bg-gray-100 min-h-screen">
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">Marketplace</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            {!userAccountId ? (
-              <div className="text-center bg-white p-8 rounded-lg shadow-md">
-                <p className="text-lg text-gray-700">Please connect your wallet to access the marketplace.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                {listings.map((listing) => (
-                  <ListCard
-                    key={listing.id}
-                    listing={listing}
-                    onBuy={handleBuy}
-                  />
-                ))}
-              </div>
-            )}
+        {!userAccountId ? (
+          <div className="text-center bg-white p-8 rounded-lg shadow-md">
+            <p className="text-lg text-gray-700">Please connect your wallet to access the marketplace.</p>
           </div>
-          <div className="lg:col-span-1">
-            {showChat && (
-              <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
-                {activeOrder && (
-                  <div className="mb-4">
-                    <h2 className="text-2xl font-semibold text-gray-800">Order Chat</h2>
-                    <p className="text-gray-600">Discuss your order for <span className="font-medium">{activeOrder.name}</span>.</p>
-                  </div>
-                )}
-                <ChatBox topicId={topicId} />
-              </div>
-            )}
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {listings.map((listing) => (
+              <ListCard
+                key={listing.id}
+                listing={listing}
+                onBuy={handleBuy}
+              />
+            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

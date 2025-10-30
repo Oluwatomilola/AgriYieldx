@@ -2,18 +2,14 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useDisconnect } from 'wagmi';
 
 export default function WalletConnect() {
-  const { address, isConnecting, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
   if (!isConnected) {
     return (
       <ConnectButton.Custom>
         {({
-          account,
-          chain,
           openConnectModal,
-          openChainModal,
-          openAccountModal,
           mounted,
         }) => {
           const ready = mounted;

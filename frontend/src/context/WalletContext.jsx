@@ -1,35 +1,13 @@
 import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
+import { config } from '../config';
 
 const HEDERA_TESTNET_ID = 296;
 const HEDERA_TESTNET_HEX = '0x128';
-
-const hederaTestnet = {
-  id: HEDERA_TESTNET_ID,
-  name: 'Hedera Testnet',
-  nativeCurrency: { name: 'HBAR', symbol: 'HBAR', decimals: 18 },
-  rpcUrls: {
-    default: { http: ['https://testnet.hashio.io/api'] },
-    public: { http: ['https://testnet.hashio.io/api'] },
-  },
-  blockExplorers: {
-    default: { name: 'Hashscan', url: 'https://hashscan.io/testnet' },
-  },
-  testnet: true,
-};
-
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
-
-const config = getDefaultConfig({
-  appName: import.meta.env.VITE_APP_NAME ?? 'AgriYield Testnet',
-  projectId,
-  chains: [hederaTestnet],
-  ssr: false,
-});
 
 const queryClient = new QueryClient();
 
