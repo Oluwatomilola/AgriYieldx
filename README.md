@@ -49,11 +49,10 @@ This video shows installation, how to mint a token, log events, transfer asset, 
 
 ## 📂 Installation & Running  
 1. Clone repository  
-```bash
+bash
 git clone https://github.com/yusuf-abdoul/AgriYieldX.git
 cd AgriYieldX
 Install dependencies (frontend + backend)
-```
 
 2. Install dependencies (frontend + backend)
 cd backend && npm install  
@@ -73,42 +72,28 @@ cd frontend && npm start
 6. Use browser to navigate to http://localhost:3000 (or specified port) to register asset, view dashboard, etc.
 
 
-✅ Requirements Compliance
+## ✅ Requirements Compliance
 
 Platform: Web app (frontend + backend) running on specified environment (Hedera Testnet).
 
-
 Working consistency: All flows (mint token, log events, transfer) are functioning as shown in demo video.
-
 
 Track: This aligns with Track 1 (Onchain Finance & Real-World Assets) per Hedera Hackathon rules.
 
-
 New / significant update: Since hackathon start, we added Hedera integration (HTS & HCS), dashboard UI, token transfer logic.
-
 
 Third-party integrations: Weather API (if used) is under licence XYZ, UI icons under MIT licence, documented in LICENSES.md.
 
 
-🧾 What’s Next / Roadmap
+## 🧾 What’s Next / Roadmap
+-Expand to Hedera Mainnet deployment
+-Add mobile app (React Native)
+-Add DeFi features: yield-based loans, staking of tokens
+-Expand analytics: yield prediction via AI/ML
+-Integrate IoT sensors for field monitoring (for DLT for Operations track)
 
-
-Expand to Hedera Mainnet deployment
-
-
-Add mobile app (React Native)
-
-
-Add DeFi features: yield-based loans, staking of tokens
-
-
-Expand analytics: yield prediction via AI/ML
-
-
-Integrate IoT sensors for field monitoring (for DLT for Operations track)
-
-
-📄 License
+## 📄 License
 This project is licensed under the MIT License. See LICENSE file for full details.
-🙌 Acknowledgements
+
+## 🙌 Acknowledgements
 Thanks to the Hedera Hackathon team for organising this track and the SDK teams for open-source libraries.
