@@ -13,26 +13,32 @@ export default function Navbar() {
               </Link>
             </div>
             <div className="hidden md:flex items-baseline space-x-4">
-              <Link 
-                to="/marketplace" 
+              <Link
+                to="/marketplace"
                 className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Marketplace
               </Link>
-              <Link 
-                to="/farms" 
+              <Link
+                to="/farms"
                 className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Farm Listings
               </Link>
-              <Link 
-                to="/investor" 
+              <Link
+                to="/faucet"
+                className="px-3 py-2 rounded-md text-sm font-medium bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 transition-colors border border-green-200"
+              >
+                💧 Faucet
+              </Link>
+              <Link
+                to="/investor"
                 className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Investor Dashboard
               </Link>
-              <Link 
-                to="/farmer" 
+              <Link
+                to="/farmer"
                 className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Farmer Dashboard

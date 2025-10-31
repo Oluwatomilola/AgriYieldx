@@ -10,10 +10,10 @@ export default function FarmCard({ farm, onInvest }) {
         <h2 className="text-xl font-bold text-gray-800 mb-2">{farm.name}</h2>
         <div className="space-y-2 mb-4">
           <p className="text-sm text-gray-600">
-            <span className="font-semibold">Funding Goal:</span> {farm.fundingGoal} HBAR
+            <span className="font-semibold">Funding Goal:</span> {farm.fundingGoal} hUSDT
           </p>
           <p className="text-sm text-gray-600">
-            <span className="font-semibold">Amount Raised:</span> {farm.raised} HBAR
+            <span className="font-semibold">Amount Raised:</span> {farm.raised} hUSDT
           </p>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 

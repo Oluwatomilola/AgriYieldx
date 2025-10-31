@@ -17,6 +17,7 @@
     "@tanstack/react-query": "^5.90.2",
     "@walletconnect/universal-provider": "^2.21.9",
     "buffer": "^6.0.3",
+    "dotenv": "^17.2.3",
     "ethers": "^6.15.0",
     "hashconnect": "^3.0.13",
     "react": "^19.1.1",
