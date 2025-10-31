@@ -47,25 +47,30 @@ export default function FaucetButton() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      // Step 1: Associate token (this will trigger MetaMask popup)
+      // Step 1: Associate token using HTS precompiled contract (this will trigger MetaMask popup)
       setSuccess('Step 1/2: Please approve token association in MetaMask...');
-      const tokenAddress = MOCK_USDT_ADDR;
 
-      // Call associate function via smart contract
+      // HTS Precompiled contract address for token association
+      const HTS_PRECOMPILE = '0x0000000000000000000000000000000000000167';
+
+      // associateToken(address account, address token) function signature
       const iface = new ethers.Interface([
-        'function associate() external returns (int64)'
+        'function associateToken(address account, address token) external returns (int64)'
       ]);
 
       const associateTx = await signer.sendTransaction({
-        to: tokenAddress,
-        data: iface.encodeFunctionData('associate', []),
-        gasLimit: 800000
+        to: HTS_PRECOMPILE,
+        data: iface.encodeFunctionData('associateToken', [address, MOCK_USDT_ADDR]),
+        gasLimit: 1000000
       });
 
       await associateTx.wait();
       setSuccess('✅ Token associated! Step 2/2: Claiming tokens...');
 
-      // Step 2: Call backend to mint and transfer
+      // Small delay to let Mirror Node update
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // Step 2: Call backend to grant KYC, mint and transfer
       const response = await fetch(`${API_URL}/faucet/claim`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,8 +90,9 @@ export default function FaucetButton() {
       console.error('Faucet error:', err);
       if (err.code === 'ACTION_REJECTED') {
         setError('Transaction rejected by user');
-      } else if (err.message?.includes('already associated')) {
+      } else if (err.message?.includes('TOKEN_ALREADY_ASSOCIATED') || err.message?.includes('already associated')) {
         // Token already associated, try claiming directly
+        setSuccess('Token already associated. Claiming tokens...');
         try {
           const response = await fetch(`${API_URL}/faucet/claim`, {
             method: 'POST',
