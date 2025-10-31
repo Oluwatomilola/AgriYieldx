@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
 import axios from "axios";
+import FormData from "form-data";
 
-export async function uploadToIpfs(req: Request, res: Response) {
+export async function uploadToIpfs(req, res) {
   try {
     if (!req.file) return res.status(400).json({ error: "file required" });
     const PINATA_JWT = process.env.PINATA_JWT;
@@ -20,7 +20,7 @@ export async function uploadToIpfs(req: Request, res: Response) {
 
     const cid = resp.data.IpfsHash;
     res.json({ uri: `ipfs://${cid}`, cid });
-  } catch (err: any) {
+  } catch (err) {
     console.error(err?.response?.data ?? err);
     res.status(500).json({ error: err.message ?? String(err) });
   }

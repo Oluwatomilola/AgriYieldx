@@ -7,8 +7,9 @@ async function main() {
   const deployer = (await ethers.getSigners())[0];
   console.log("Deployer address:", deployer.address);
 
-  const agriYieldAddr = process.env.AGRI_YIELD_ADDRESS as string | undefined;
   const tokenAddr = process.env.MOCK_USDT_ADDRESS as string | undefined;
+  const agriYieldAddr = process.env.AGRI_YIELD_ADDRESS as string | undefined;
+
   
   if (!agriYieldAddr || !tokenAddr) {
     throw new Error(

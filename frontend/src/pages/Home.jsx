@@ -51,15 +51,35 @@ export default function Home() {
 
   const handleInvest = async (farmId, amount) => {
     try {
-      if (userAccountId) {
-        await contractService.invest(farmId, amount);
-        alert("Investment successful!");
-      } else {
-        alert("Demo mode: connect wallet to invest when contracts are live.");
+      if (!userAccountId) {
+        alert("Please connect your wallet first.");
+        return;
       }
+
+      // Check KYC status first
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+      const kycResponse = await fetch(`${API_URL}/kyc/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ evmAddress: userAccountId }),
+      });
+
+      const kycData = await kycResponse.json();
+      if (!kycData.kycApproved) {
+        alert("KYC Required: Please claim tokens from the faucet first to complete KYC verification. Visit the Faucet page to get started.");
+        return;
+      }
+
+      // Call the contract via contractService
+      await contractService.invest(farmId, amount, true);
+      alert("Investment successful!");
     } catch (e) {
       console.error(e);
-      alert("Investment failed.");
+      if (e.message?.includes("KYC")) {
+        alert("KYC Required: Please claim tokens from the faucet first to complete KYC verification.");
+      } else {
+        alert("Investment failed: " + (e.message || "Unknown error"));
+      }
     }
   };
 

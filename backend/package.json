@@ -1,6 +1,7 @@
 {
   "name": "agriyield-backend",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -13,11 +14,13 @@
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "ethers": "^6.15.0",
     "express": "^4.18.2",
     "express-rate-limit": "^8.1.0",
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^4.17.17",
     "@types/multer": "^1.4.7",
     "ts-node-dev": "^2.0.0",

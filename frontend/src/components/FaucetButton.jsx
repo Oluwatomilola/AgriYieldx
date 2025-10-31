@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
-import { ethers } from 'ethers';
-import { getTokenBalance } from '../common/contractServices';
 
-const MOCK_USDT_ADDR = import.meta.env.VITE_MOCK_USDT_ADDRESS;
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
 export default function FaucetButton() {
@@ -17,11 +14,30 @@ export default function FaucetButton() {
   const checkBalance = async () => {
     if (!address) return;
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const userBalance = await getTokenBalance(provider, MOCK_USDT_ADDR, address);
-      setBalance(ethers.formatUnits(userBalance, 6));
+      // Use Mirror Node API to get HTS token balance
+      const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/accounts/${address}`;
+      const response = await fetch(mirrorNodeUrl);
+      if (!response.ok) {
+        setBalance('0');
+        return;
+      }
+      const accountData = await response.json();
+      const hederaAccountId = accountData.account;
+
+      // Get token balance
+      const tokenUrl = `https://testnet.mirrornode.hedera.com/api/v1/accounts/${hederaAccountId}/tokens?token.id=0.0.6918795`;
+      const tokenResponse = await fetch(tokenUrl);
+      const tokenData = await tokenResponse.json();
+
+      if (tokenData.tokens && tokenData.tokens.length > 0) {
+        const balance = tokenData.tokens[0].balance;
+        setBalance((balance / 1000000).toFixed(2)); // Convert from smallest unit (6 decimals)
+      } else {
+        setBalance('0');
+      }
     } catch (err) {
       console.error('Balance error:', err);
+      setBalance('0');
     }
   };
 
@@ -44,31 +60,8 @@ export default function FaucetButton() {
     setSuccess('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      // Step 1: Associate token using HTS precompiled contract (this will trigger MetaMask popup)
-      setSuccess('Step 1/2: Please approve token association in MetaMask...');
-
-      // HTS Precompiled contract address for token association
-      const HTS_PRECOMPILE = '0x0000000000000000000000000000000000000167';
-
-      // associateToken(address account, address token) function signature
-      const iface = new ethers.Interface([
-        'function associateToken(address account, address token) external returns (int64)'
-      ]);
-
-      const associateTx = await signer.sendTransaction({
-        to: HTS_PRECOMPILE,
-        data: iface.encodeFunctionData('associateToken', [address, MOCK_USDT_ADDR]),
-        gasLimit: 1000000
-      });
-
-      await associateTx.wait();
-      setSuccess('✅ Token associated! Step 2/2: Claiming tokens...');
-
-      // Small delay to let Mirror Node update
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Skip frontend association for now - will be done manually or via HashPack
+      setSuccess('Checking token association and claiming tokens...');
 
       // Step 2: Call backend to grant KYC, mint and transfer
       const response = await fetch(`${API_URL}/faucet/claim`, {
@@ -106,6 +99,10 @@ export default function FaucetButton() {
         } catch (claimErr) {
           setError(claimErr.message || 'Failed to claim tokens');
         }
+      } else if (err.message?.includes('Account lookup failed') || err.message?.includes('Account not found')) {
+        setError('Your account needs to be activated on Hedera testnet first. Click "Get Test HBAR" below to activate your account.');
+      } else if (err.message?.includes('Token not associated')) {
+        setError(`First, you need to associate the hUSDT token with your account. Visit https://hashscan.io/testnet/token/0.0.6918795 and click "Associate Token", or use HashPack wallet to add token ID: 0.0.6918795`);
       } else {
         setError(err.message || 'Failed to claim tokens');
       }
@@ -121,6 +118,10 @@ export default function FaucetButton() {
       </div>
     );
   }
+
+  const handleGetHBAR = () => {
+    window.open('https://portal.hedera.com/faucet', '_blank');
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
@@ -161,13 +162,27 @@ export default function FaucetButton() {
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
             <p className="text-red-800 text-sm">{error}</p>
+            {error.includes('activate') && (
+              <button
+                onClick={handleGetHBAR}
+                className="mt-2 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all text-sm font-medium"
+              >
+                Get Test HBAR (Activate Account)
+              </button>
+            )}
           </div>
         )}
 
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p className="text-blue-800 text-xs">
-            <strong>Note:</strong> Claim once every 24h. Complete KYC to invest.
+            <strong>Note:</strong> Your account must be activated on Hedera testnet first. If you haven't received HBAR yet, click below.
           </p>
+          <button
+            onClick={handleGetHBAR}
+            className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline"
+          >
+            Get Test HBAR from Hedera Faucet
+          </button>
         </div>
       </div>
     </div>

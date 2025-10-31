@@ -302,7 +302,6 @@ contract Marketplace is ReentrancyGuard {
         require(msg.sender == o.buyer, "Marketplace: only buyer");
         require(o.status == OrderStatus.Received, "Marketplace: not received");
         require(!o.isDisputed, "Marketplace: disputed");
-
         o.status = OrderStatus.Completed;
         int rc = HTS.transferToken(
             stableToken,

@@ -51,14 +51,31 @@ export default function Marketplace() {
         alert("Please connect your wallet before purchasing.");
         return;
       }
-      const tx = await contractService.purchase(listing.id, 1);
-      const receipt = await tx.wait();
-      // This is a simplification. In a real app, you'd get the orderId from the event logs.
-      const orderId = receipt.logs[0].args[0]; 
-      navigate(`/order/${orderId}`);
+
+      // Check KYC status first
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+      const kycResponse = await fetch(`${API_URL}/kyc/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ evmAddress: userAccountId }),
+      });
+
+      const kycData = await kycResponse.json();
+      if (!kycData.kycApproved) {
+        alert("KYC Required: Please claim tokens from the faucet first to complete KYC verification. Visit the Faucet page to get started.");
+        return;
+      }
+
+      // Call the contract via contractService
+      const tx = await contractService.purchase(listing.id, 1, true);
+      alert("Purchase successful!");
     } catch (err) {
       console.error(err);
-      alert("Purchase failed.");
+      if (err.message?.includes("KYC")) {
+        alert("KYC Required: Please claim tokens from the faucet first to complete KYC verification.");
+      } else {
+        alert("Purchase failed: " + (err.message || "Unknown error"));
+      }
     }
   };
 
