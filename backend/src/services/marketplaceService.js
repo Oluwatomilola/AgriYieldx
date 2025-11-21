@@ -1,11 +1,14 @@
+import dotenv from "dotenv";
 import { ethers } from "ethers";
-import MarketplaceABI from "../abis/Marketplace.json" with { type: "json" };
+import MarketplaceJSON from "../abis/Marketplace.json" with { type: "json" };
 
-const MARKETPLACE_ADDR = process.env.MARKETPLACE_ADDR;
+dotenv.config();
+
+const MARKETPLACE_ADDR = process.env.MARKETPLACE_ADDRESS;
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-const marketplace = new ethers.Contract(MARKETPLACE_ADDR, MarketplaceABI, wallet);
+const marketplace = new ethers.Contract(MARKETPLACE_ADDR, MarketplaceJSON.abi, wallet);
 
 /**
  * ✅ Create a new listing (farmer only)

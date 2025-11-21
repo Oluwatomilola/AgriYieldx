@@ -16,6 +16,10 @@ interface IHederaTokenService {
         address token,
         address account
     ) external view returns (int, bool);
+    function associateToken(
+        address account,
+        address token
+    ) external returns (int);
 }
 
 // Hedera Response Codes
@@ -119,12 +123,21 @@ contract Marketplace is ReentrancyGuard {
     );
     event DisputeOpened(uint256 indexed orderId, string reasonCID);
     event DisputeResolved(uint256 indexed orderId, bool sellerFavor);
+    event TokenAssociated(address indexed token);
+
+    address public admin;
 
     constructor(address _stableToken, address _agriYield) {
         require(_stableToken != address(0), "Marketplace: zero token");
         require(_agriYield != address(0), "Marketplace: zero agriYield");
         stableToken = _stableToken;
         agriYield = IAgriYield(_agriYield);
+        admin = msg.sender;
+    }
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Marketplace: only admin");
+        _;
     }
 
     // -------------------------
@@ -380,5 +393,17 @@ contract Marketplace is ReentrancyGuard {
 
     function getOrder(uint256 orderId) external view returns (Order memory) {
         return orders[orderId];
+    }
+
+    /// @notice Associate this contract with the HTS token
+    /// @dev Must be called after deployment to enable token transfers
+    /// @dev Only admin can call this function
+    function associateToken() external onlyAdmin {
+        int response = HTS.associateToken(address(this), stableToken);
+        require(
+            response == HederaResponseCodes.SUCCESS,
+            "Marketplace: token association failed"
+        );
+        emit TokenAssociated(stableToken);
     }
 }

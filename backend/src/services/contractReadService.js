@@ -1,15 +1,18 @@
+import dotenv from "dotenv";
 import { ethers } from "ethers";
-import AgriYieldABI from "../abis/AgriYield.json" with { type: "json" };
-import MarketplaceABI from "../abis/Marketplace.json" with { type: "json" };
+import AgriYieldJSON from "../abis/AgriYield.json" with { type: "json" };
+import MarketplaceJSON from "../abis/Marketplace.json" with { type: "json" };
 
-const AGRIYIELD_ADDR = process.env.AGRIYIELD_ADDR;
-const MARKETPLACE_ADDR = process.env.MARKETPLACE_ADDR;
+dotenv.config();
+
+const AGRIYIELD_ADDR = process.env.AGRIYIELD_ADDRESS;
+const MARKETPLACE_ADDR = process.env.MARKETPLACE_ADDRESS;
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-const agriYield = new ethers.Contract(AGRIYIELD_ADDR, AgriYieldABI, wallet);
-const marketplace = new ethers.Contract(MARKETPLACE_ADDR, MarketplaceABI, wallet);
+const agriYield = new ethers.Contract(AGRIYIELD_ADDR, AgriYieldJSON.abi, wallet);
+const marketplace = new ethers.Contract(MARKETPLACE_ADDR, MarketplaceJSON.abi, wallet);
 
 // ✅ Get campaign info
 export async function getCampaign(farmId) {

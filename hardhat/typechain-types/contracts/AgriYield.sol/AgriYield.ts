@@ -60,6 +60,7 @@ export interface AgriYieldInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "admin"
+      | "associateToken"
       | "claimInvestorPayout"
       | "createFarm"
       | "depositProceeds"
@@ -70,6 +71,9 @@ export interface AgriYieldInterface extends Interface {
       | "getFarm"
       | "invest"
       | "investorShares"
+      | "onERC1155BatchReceived"
+      | "onERC1155Received"
+      | "supportsInterface"
       | "tokenAddress"
   ): FunctionFragment;
 
@@ -80,9 +84,14 @@ export interface AgriYieldInterface extends Interface {
       | "Invested"
       | "InvestorClaimed"
       | "ProceedsDeposited"
+      | "TokenAssociated"
   ): EventFragment;
 
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "associateToken",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "claimInvestorPayout",
     values: [BigNumberish]
@@ -118,11 +127,33 @@ export interface AgriYieldInterface extends Interface {
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "onERC1155BatchReceived",
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish[],
+      BigNumberish[],
+      BytesLike
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "onERC1155Received",
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "tokenAddress",
     values?: undefined
   ): string;
 
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "associateToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "claimInvestorPayout",
     data: BytesLike
@@ -143,6 +174,18 @@ export interface AgriYieldInterface extends Interface {
   decodeFunctionResult(functionFragment: "invest", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "investorShares",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "onERC1155BatchReceived",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "onERC1155Received",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -238,6 +281,18 @@ export namespace ProceedsDepositedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace TokenAssociatedEvent {
+  export type InputTuple = [token: AddressLike];
+  export type OutputTuple = [token: string];
+  export interface OutputObject {
+    token: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface AgriYield extends BaseContract {
   connect(runner?: ContractRunner | null): AgriYield;
   waitForDeployment(): Promise<this>;
@@ -282,6 +337,8 @@ export interface AgriYield extends BaseContract {
   ): Promise<this>;
 
   admin: TypedContractMethod<[], [string], "view">;
+
+  associateToken: TypedContractMethod<[], [void], "nonpayable">;
 
   claimInvestorPayout: TypedContractMethod<
     [farmId: BigNumberish],
@@ -351,6 +408,36 @@ export interface AgriYield extends BaseContract {
     "view"
   >;
 
+  onERC1155BatchReceived: TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike
+    ],
+    [string],
+    "view"
+  >;
+
+  onERC1155Received: TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike
+    ],
+    [string],
+    "view"
+  >;
+
+  supportsInterface: TypedContractMethod<
+    [interfaceId: BytesLike],
+    [boolean],
+    "view"
+  >;
+
   tokenAddress: TypedContractMethod<[], [string], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -360,6 +447,9 @@ export interface AgriYield extends BaseContract {
   getFunction(
     nameOrSignature: "admin"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "associateToken"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "claimInvestorPayout"
   ): TypedContractMethod<[farmId: BigNumberish], [void], "nonpayable">;
@@ -431,6 +521,35 @@ export interface AgriYield extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "onERC1155BatchReceived"
+  ): TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike
+    ],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "onERC1155Received"
+  ): TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike
+    ],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "supportsInterface"
+  ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+  getFunction(
     nameOrSignature: "tokenAddress"
   ): TypedContractMethod<[], [string], "view">;
 
@@ -468,6 +587,13 @@ export interface AgriYield extends BaseContract {
     ProceedsDepositedEvent.InputTuple,
     ProceedsDepositedEvent.OutputTuple,
     ProceedsDepositedEvent.OutputObject
+  >;
+  getEvent(
+    key: "TokenAssociated"
+  ): TypedContractEvent<
+    TokenAssociatedEvent.InputTuple,
+    TokenAssociatedEvent.OutputTuple,
+    TokenAssociatedEvent.OutputObject
   >;
 
   filters: {
@@ -524,6 +650,17 @@ export interface AgriYield extends BaseContract {
       ProceedsDepositedEvent.InputTuple,
       ProceedsDepositedEvent.OutputTuple,
       ProceedsDepositedEvent.OutputObject
+    >;
+
+    "TokenAssociated(address)": TypedContractEvent<
+      TokenAssociatedEvent.InputTuple,
+      TokenAssociatedEvent.OutputTuple,
+      TokenAssociatedEvent.OutputObject
+    >;
+    TokenAssociated: TypedContractEvent<
+      TokenAssociatedEvent.InputTuple,
+      TokenAssociatedEvent.OutputTuple,
+      TokenAssociatedEvent.OutputObject
     >;
   };
 }

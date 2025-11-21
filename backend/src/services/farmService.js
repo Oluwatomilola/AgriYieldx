@@ -1,11 +1,14 @@
+import dotenv from "dotenv";
 import { getHusdtBalance, transferHusdt, grantKyc } from "./tokenService.js";
 import { ethers } from "ethers";
-import AgriYieldABI from "../abis/AgriYield.json" with { type: "json" };
+import AgriYieldJSON from "../abis/AgriYield.json" with { type: "json" };
 
-const AGRIYIELD_ADDR = process.env.AGRIYIELD_ADDR;
+dotenv.config();
+
+const AGRIYIELD_ADDR = process.env.AGRIYIELD_ADDRESS;
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-const agriYieldContract = new ethers.Contract(AGRIYIELD_ADDR, AgriYieldABI, wallet);
+const agriYieldContract = new ethers.Contract(AGRIYIELD_ADDR, AgriYieldJSON.abi, wallet);
 
 /**
  * ✅ Investor invests in a farm campaign

@@ -1,0 +1,106 @@
+{
+  "receipts": [
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.6918795",
+      "serial": 4,
+      "owner": "0.0.6822871",
+      "txHash": "0x3645fefa1554011656ace19a82f2893c6947cbe7f7f3dbbfdfb0ca0ba6e77fb1",
+      "transferTxId": "0.0.6822871-1732146424-0000000002",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 14,
+        "investor": "0x0348DEAAE8cb335171400BddF87604D2E2162b0F",
+        "amount": "5000000",
+        "shares": 3,
+        "txHash": "0x3645fefa1554011656ace19a82f2893c6947cbe7f7f3dbbfdfb0ca0ba6e77fb1",
+        "timestamp": 1732146411
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 5,
+      "owner": "0.0.6765569",
+      "txHash": "0xca581ff7c99a90e43c9b468144f014e07b9bb457eb8fa552f0094e82ed0ac959",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x3cFde77b62AfFa598532bB53cf305DD23dD276e6",
+        "amount": "100000000",
+        "shares": 1,
+        "txHash": "0xca581ff7c99a90e43c9b468144f014e07b9bb457eb8fa552f0094e82ed0ac959",
+        "timestamp": 1763757388
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 6,
+      "owner": "0.0.6765569",
+      "txHash": "0xfa24c74ba35f10b8dd7315861a31a3edfa9dbd64f670c63643d221d3517c5e54",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x3cFde77b62AfFa598532bB53cf305DD23dD276e6",
+        "amount": "100000000",
+        "shares": 1,
+        "txHash": "0xfa24c74ba35f10b8dd7315861a31a3edfa9dbd64f670c63643d221d3517c5e54",
+        "timestamp": 1763759004
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 7,
+      "owner": "0.0.6822871",
+      "txHash": "0xb97115d2b2b44f83d84ea34a1d21e502e08e4d76af1226ca9469c2d6e7ce72e5",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x0348DEAAE8cb335171400BddF87604D2E2162b0F",
+        "amount": "100000000",
+        "shares": 1,
+        "txHash": "0xb97115d2b2b44f83d84ea34a1d21e502e08e4d76af1226ca9469c2d6e7ce72e5",
+        "timestamp": 1763759994
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 8,
+      "owner": "0.0.6765569",
+      "txHash": "0xright-token-id-test-001",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x3cFde77b62AfFa598532bB53cf305DD23dD276e6",
+        "amount": "100000000",
+        "shares": 1,
+        "txHash": "0xright-token-id-test-001",
+        "timestamp": 1763760626
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 11,
+      "owner": "0.0.6822871",
+      "txHash": "0x2f5c315cb29bc4040e8a42b119e0ec76fa3c67c2ea8a3b603c22c8914d2ca67e",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x0348deaae8cb335171400bddf87604d2e2162b0f",
+        "amount": "100000000",
+        "shares": 1,
+        "txHash": "0x2f5c315cb29bc4040e8a42b119e0ec76fa3c67c2ea8a3b603c22c8914d2ca67e",
+        "timestamp": 1763761273
+      }
+    }
+  ]
+}

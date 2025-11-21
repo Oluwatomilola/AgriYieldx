@@ -22,8 +22,14 @@ import type {
 } from "../../common";
 
 export interface IHederaTokenServiceInterface extends Interface {
-  getFunction(nameOrSignature: "isKyc" | "transferToken"): FunctionFragment;
+  getFunction(
+    nameOrSignature: "associateToken" | "isKyc" | "transferToken"
+  ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "associateToken",
+    values: [AddressLike, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "isKyc",
     values: [AddressLike, AddressLike]
@@ -33,6 +39,10 @@ export interface IHederaTokenServiceInterface extends Interface {
     values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "associateToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isKyc", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferToken",
@@ -83,6 +93,12 @@ export interface IHederaTokenService extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  associateToken: TypedContractMethod<
+    [account: AddressLike, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+
   isKyc: TypedContractMethod<
     [token: AddressLike, account: AddressLike],
     [[bigint, boolean]],
@@ -104,6 +120,13 @@ export interface IHederaTokenService extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "associateToken"
+  ): TypedContractMethod<
+    [account: AddressLike, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "isKyc"
   ): TypedContractMethod<

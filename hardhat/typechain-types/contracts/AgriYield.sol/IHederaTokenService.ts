@@ -21,11 +21,63 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
+export declare namespace IHederaTokenService {
+  export type AccountAmountStruct = {
+    accountID: AddressLike;
+    amount: BigNumberish;
+  };
+
+  export type AccountAmountStructOutput = [
+    accountID: string,
+    amount: bigint
+  ] & { accountID: string; amount: bigint };
+
+  export type TransferListStruct = {
+    transfers: IHederaTokenService.AccountAmountStruct[];
+  };
+
+  export type TransferListStructOutput = [
+    transfers: IHederaTokenService.AccountAmountStructOutput[]
+  ] & { transfers: IHederaTokenService.AccountAmountStructOutput[] };
+
+  export type TokenTransferListStruct = {
+    token: AddressLike;
+    transfers: IHederaTokenService.AccountAmountStruct[];
+    nftTransfers: BigNumberish[];
+  };
+
+  export type TokenTransferListStructOutput = [
+    token: string,
+    transfers: IHederaTokenService.AccountAmountStructOutput[],
+    nftTransfers: bigint[]
+  ] & {
+    token: string;
+    transfers: IHederaTokenService.AccountAmountStructOutput[];
+    nftTransfers: bigint[];
+  };
+}
+
 export interface IHederaTokenServiceInterface extends Interface {
   getFunction(
-    nameOrSignature: "isKyc" | "mintToken" | "transferToken"
+    nameOrSignature:
+      | "associateToken"
+      | "cryptoTransfer"
+      | "isKyc"
+      | "mintToken"
+      | "transferToken"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "associateToken",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cryptoTransfer",
+    values: [
+      IHederaTokenService.TransferListStruct,
+      IHederaTokenService.TokenTransferListStruct[]
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "isKyc",
     values: [AddressLike, AddressLike]
@@ -39,6 +91,14 @@ export interface IHederaTokenServiceInterface extends Interface {
     values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "associateToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cryptoTransfer",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isKyc", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintToken", data: BytesLike): Result;
   decodeFunctionResult(
@@ -90,6 +150,21 @@ export interface IHederaTokenService extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  associateToken: TypedContractMethod<
+    [account: AddressLike, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+
+  cryptoTransfer: TypedContractMethod<
+    [
+      transferList: IHederaTokenService.TransferListStruct,
+      tokenTransfers: IHederaTokenService.TokenTransferListStruct[]
+    ],
+    [bigint],
+    "nonpayable"
+  >;
+
   isKyc: TypedContractMethod<
     [token: AddressLike, account: AddressLike],
     [[bigint, boolean]],
@@ -117,6 +192,23 @@ export interface IHederaTokenService extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "associateToken"
+  ): TypedContractMethod<
+    [account: AddressLike, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "cryptoTransfer"
+  ): TypedContractMethod<
+    [
+      transferList: IHederaTokenService.TransferListStruct,
+      tokenTransfers: IHederaTokenService.TokenTransferListStruct[]
+    ],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "isKyc"
   ): TypedContractMethod<

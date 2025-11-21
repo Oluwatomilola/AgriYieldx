@@ -22,6 +22,8 @@ export type { IERC1155 } from "./@openzeppelin/contracts/token/ERC1155/IERC1155"
 export { IERC1155__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/IERC1155__factory";
 export type { IERC1155Receiver } from "./@openzeppelin/contracts/token/ERC1155/IERC1155Receiver";
 export { IERC1155Receiver__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/IERC1155Receiver__factory";
+export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
+export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
 export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC165";
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
@@ -48,3 +50,5 @@ export type { IKeyHelper } from "./contracts/MockUSDT.sol/IKeyHelper";
 export { IKeyHelper__factory } from "./factories/contracts/MockUSDT.sol/IKeyHelper__factory";
 export type { MockUSDT } from "./contracts/MockUSDT.sol/MockUSDT";
 export { MockUSDT__factory } from "./factories/contracts/MockUSDT.sol/MockUSDT__factory";
+export type { SimpleFaucet } from "./contracts/SimpleFaucet.sol/SimpleFaucet";
+export { SimpleFaucet__factory } from "./factories/contracts/SimpleFaucet.sol/SimpleFaucet__factory";

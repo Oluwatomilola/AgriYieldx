@@ -2,6 +2,15 @@ import axios from "axios";
 
 export async function uploadToIPFS(file) {
   try {
+      if (!file) {
+        throw new Error("No file selected");
+      }
+
+      const jwtSecret = import.meta.env.VITE_PINATA_JWT_SECRET;
+      if (!jwtSecret) {
+        throw new Error("Pinata JWT secret not configured. Please add VITE_PINATA_JWT_SECRET to your .env file");
+      }
+
       const formData = new FormData();
       formData.append("file", file);
 
@@ -10,7 +19,7 @@ export async function uploadToIPFS(file) {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_PINATA_JWT_SECRET}`,
+            Authorization: `Bearer ${jwtSecret}`,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -24,7 +33,11 @@ export async function uploadToIPFS(file) {
       // setHash(data.IpfsHash);
       return data.IpfsHash;
     } catch (err) {
-      console.log(err.message);
-      return null;
+      console.error('IPFS Upload Error:', err);
+      if (err.response) {
+        console.error('Response data:', err.response.data);
+        console.error('Response status:', err.response.status);
+      }
+      throw new Error(err.response?.data?.error || err.message || "Failed to upload to IPFS");
     }
 }

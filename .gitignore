@@ -4,6 +4,15 @@ node_modules
 # Hardhat files
 /cache
 /artifacts
+hardhat/cache/
+hardhat/artifacts/
+hardhat/typechain-types/
+
+# Receipts backend (legacy duplicate)
+receipts-backend/
+
+# Compiled JS duplicates under receipts service
+backend/src/receipts/**/*.js
 
 # TypeChain files
 /typechain

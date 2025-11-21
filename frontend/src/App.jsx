@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import { AppProvider } from "./context/WalletContext";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import Auth from "./pages/Auth";
 import FarmListing from "./pages/FarmListing";
 import Kyc from "./pages/Kyc";
 import OrderDetails from "./pages/OrderDetails";
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/farms" element={<FarmListing />} />
             <Route path="/faucet" element={<Faucet />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/kyc" element={<Kyc />} />

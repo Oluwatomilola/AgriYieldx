@@ -5,5 +5,6 @@ export * as agriYieldSol from "./AgriYield.sol";
 export * as marketplaceSol from "./Marketplace.sol";
 export * as mockHhederaPrecompileSol from "./MockHhederaPrecompile.sol";
 export * as mockUsdtSol from "./MockUSDT.sol";
+export * as simpleFaucetSol from "./SimpleFaucet.sol";
 export * as interfaces from "./interfaces";
 export { FarmShares__factory } from "./FarmShares__factory";

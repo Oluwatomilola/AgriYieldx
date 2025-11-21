@@ -93,7 +93,9 @@ export declare namespace Marketplace {
 export interface MarketplaceInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "admin"
       | "agriYield"
+      | "associateToken"
       | "confirmReceived"
       | "deactivateListing"
       | "getListing"
@@ -123,9 +125,15 @@ export interface MarketplaceInterface extends Interface {
       | "OrderCreated"
       | "OrderReceived"
       | "OrderShipped"
+      | "TokenAssociated"
   ): EventFragment;
 
+  encodeFunctionData(functionFragment: "admin", values?: undefined): string;
   encodeFunctionData(functionFragment: "agriYield", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "associateToken",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "confirmReceived",
     values: [BigNumberish, string]
@@ -191,7 +199,12 @@ export interface MarketplaceInterface extends Interface {
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "agriYield", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "associateToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "confirmReceived",
     data: BytesLike
@@ -403,6 +416,18 @@ export namespace OrderShippedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace TokenAssociatedEvent {
+  export type InputTuple = [token: AddressLike];
+  export type OutputTuple = [token: string];
+  export interface OutputObject {
+    token: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface Marketplace extends BaseContract {
   connect(runner?: ContractRunner | null): Marketplace;
   waitForDeployment(): Promise<this>;
@@ -446,7 +471,11 @@ export interface Marketplace extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  admin: TypedContractMethod<[], [string], "view">;
+
   agriYield: TypedContractMethod<[], [string], "view">;
+
+  associateToken: TypedContractMethod<[], [void], "nonpayable">;
 
   confirmReceived: TypedContractMethod<
     [orderId: BigNumberish, proofCID: string],
@@ -576,8 +605,14 @@ export interface Marketplace extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "admin"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "agriYield"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "associateToken"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "confirmReceived"
   ): TypedContractMethod<
@@ -773,6 +808,13 @@ export interface Marketplace extends BaseContract {
     OrderShippedEvent.OutputTuple,
     OrderShippedEvent.OutputObject
   >;
+  getEvent(
+    key: "TokenAssociated"
+  ): TypedContractEvent<
+    TokenAssociatedEvent.InputTuple,
+    TokenAssociatedEvent.OutputTuple,
+    TokenAssociatedEvent.OutputObject
+  >;
 
   filters: {
     "DisputeOpened(uint256,string)": TypedContractEvent<
@@ -872,6 +914,17 @@ export interface Marketplace extends BaseContract {
       OrderShippedEvent.InputTuple,
       OrderShippedEvent.OutputTuple,
       OrderShippedEvent.OutputObject
+    >;
+
+    "TokenAssociated(address)": TypedContractEvent<
+      TokenAssociatedEvent.InputTuple,
+      TokenAssociatedEvent.OutputTuple,
+      TokenAssociatedEvent.OutputObject
+    >;
+    TokenAssociated: TypedContractEvent<
+      TokenAssociatedEvent.InputTuple,
+      TokenAssociatedEvent.OutputTuple,
+      TokenAssociatedEvent.OutputObject
     >;
   };
 }

@@ -9,6 +9,8 @@ import type * as mockHhederaPrecompileSol from "./MockHhederaPrecompile.sol";
 export type { mockHhederaPrecompileSol };
 import type * as mockUsdtSol from "./MockUSDT.sol";
 export type { mockUsdtSol };
+import type * as simpleFaucetSol from "./SimpleFaucet.sol";
+export type { simpleFaucetSol };
 import type * as interfaces from "./interfaces";
 export type { interfaces };
 export type { FarmShares } from "./FarmShares";

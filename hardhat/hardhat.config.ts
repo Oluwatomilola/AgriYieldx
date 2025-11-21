@@ -13,7 +13,7 @@ const config: HardhatUserConfig = {
     hederaTestnet: {
       url: "https://testnet.hashio.io/api", // example RPC
       chainId: 296, // Hedera testnet EVM
-      accounts: OPERATOR_KEY && OPERATOR_KEY.length > 10 ? [`0x${OPERATOR_KEY}`] : [],
+      accounts: OPERATOR_KEY && OPERATOR_KEY.length > 10 ? [OPERATOR_KEY.startsWith('0x') ? OPERATOR_KEY : `0x${OPERATOR_KEY}`] : [],
     },
   },
 };

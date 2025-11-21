@@ -13,6 +13,102 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "associateToken",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "accountID",
+                type: "address",
+              },
+              {
+                internalType: "int64",
+                name: "amount",
+                type: "int64",
+              },
+            ],
+            internalType: "struct IHederaTokenService.AccountAmount[]",
+            name: "transfers",
+            type: "tuple[]",
+          },
+        ],
+        internalType: "struct IHederaTokenService.TransferList",
+        name: "transferList",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "accountID",
+                type: "address",
+              },
+              {
+                internalType: "int64",
+                name: "amount",
+                type: "int64",
+              },
+            ],
+            internalType: "struct IHederaTokenService.AccountAmount[]",
+            name: "transfers",
+            type: "tuple[]",
+          },
+          {
+            internalType: "int64[]",
+            name: "nftTransfers",
+            type: "int64[]",
+          },
+        ],
+        internalType: "struct IHederaTokenService.TokenTransferList[]",
+        name: "tokenTransfers",
+        type: "tuple[]",
+      },
+    ],
+    name: "cryptoTransfer",
+    outputs: [
+      {
+        internalType: "int64",
+        name: "responseCode",
+        type: "int64",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "token",
         type: "address",
       },
