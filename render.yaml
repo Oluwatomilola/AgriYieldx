@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: agriyield-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: RPC_URL
+        value: https://testnet.hashio.io/api
+      - key: RECEIPT_NFT_TOKEN_ID
+        value: 0.0.7298770
+      - key: HUSDT_TOKEN_ID
+        value: 0.0.6918795
+      - key: AGROYIELD_ADDRESS
+        fromSecret: AGRIYIELD_ADDRESS
+      - key: MARKETPLACE_ADDRESS
+        fromSecret: MARKETPLACE_ADDRESS
+      - key: OPERATOR_ID
+        fromSecret: OPERATOR_ID
+      - key: OPERATOR_KEY
+        fromSecret: OPERATOR_KEY
+      - key: HEDERA_OPERATOR_ID
+        fromSecret: HEDERA_OPERATOR_ID
+      - key: HEDERA_OPERATOR_KEY
+        fromSecret: HEDERA_OPERATOR_KEY
