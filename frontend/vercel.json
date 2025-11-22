@@ -3,5 +3,10 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "env": {
+    "VITE_API_URL": "https://agriyield-1.onrender.com/api",
+    "VITE_RECEIPTS_API_URL": "https://agriyield-1.onrender.com/api/receipts",
+    "VITE_RPC_URL": "https://testnet.hashio.io/api"
+  }
 }
