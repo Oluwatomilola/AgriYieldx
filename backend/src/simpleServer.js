@@ -21,11 +21,8 @@ import {
   authMiddleware
 } from "./services/authService.js";
 import {
-  transferTokens,
   getTokenBalance,
-  callInvestFunction,
-  evmAddressToAccountId,
-  preflightTokenTransfer
+  evmAddressToAccountId
 } from "./services/hederaService.js";
 
 dotenv.config();
@@ -335,147 +332,6 @@ app.get("/api/auth/me", authMiddleware, (req, res) => {
   });
 });
 
-// ============================================================
-// INVESTMENT ENDPOINTS (Backend-Managed Token Transfers)
-// ============================================================
-
-// Invest in a farm (protected route)
-app.post("/api/farm/invest-backend", authMiddleware, async (req, res) => {
-  try {
-    const { farmId, amount } = req.body;
-    const investorAddress = req.user.address;
-
-    if (!farmId || !amount) {
-      return res.status(400).json({ error: "farmId and amount required" });
-    }
-
-    // Convert EVM addresses to Hedera Account IDs
-    if (!process.env.HUSDT_TOKEN_ID || !process.env.AGRIYIELD_ADDRESS) {
-      return res.status(500).json({ error: "Server configuration missing" });
-    }
-    const investorAccountId = await evmAddressToAccountId(investorAddress);
-    const contractAccountId = await evmAddressToAccountId(process.env.AGRIYIELD_ADDRESS);
-    const tokenId = process.env.HUSDT_TOKEN_ID;
-
-    console.log(`Investment request:
-      Investor: ${investorAddress} (${investorAccountId})
-      Farm ID: ${farmId}
-      Amount: ${amount}
-      Contract: ${process.env.AGRIYIELD_ADDRESS} (${contractAccountId})
-    `);
-
-    // Step 1: Preflight checks
-    console.log("Step 1: Preflight checks...");
-    const preflight = await preflightTokenTransfer(
-      investorAccountId,
-      contractAccountId,
-      tokenId,
-      parseInt(amount)
-    );
-
-    if (!preflight.success) {
-      // Attempt KYC remediation if required
-      if (preflight.reason === "SENDER_KYC_REQUIRED" || preflight.reason === "RECEIVER_KYC_REQUIRED") {
-        try {
-          const { grantKyc } = await import("./services/tokenService.js");
-          if (preflight.reason === "SENDER_KYC_REQUIRED") {
-            console.log(`Granting KYC to sender ${investorAccountId} for token ${tokenId}...`);
-            await grantKyc(investorAccountId, tokenId);
-          }
-          if (preflight.reason === "RECEIVER_KYC_REQUIRED") {
-            console.log(`Granting KYC to receiver ${contractAccountId} for token ${tokenId}...`);
-            await grantKyc(contractAccountId, tokenId);
-          }
-          // Re-run preflight after KYC grant
-          const retry = await preflightTokenTransfer(
-            investorAccountId,
-            contractAccountId,
-            tokenId,
-            parseInt(amount)
-          );
-          if (!retry.success) {
-            return res.status(400).json({
-              error: "Token transfer preflight failed after KYC grant",
-              reason: retry.reason,
-              message: retry.message,
-              details: retry.details ?? undefined
-            });
-          }
-        } catch (kycErr) {
-          console.error("KYC remediation error:", kycErr);
-          return res.status(400).json({
-            error: "KYC remediation failed",
-            reason: preflight.reason,
-            message: preflight.message,
-            details: preflight.details ?? undefined
-          });
-        }
-      } else {
-        return res.status(400).json({
-          error: "Token transfer preflight failed",
-          reason: preflight.reason,
-          message: preflight.message,
-          details: preflight.details ?? undefined
-        });
-      }
-    }
-
-    // Step 2: Transfer tokens from investor to contract
-    console.log("Step 1: Transferring tokens...");
-    const transferResult = await transferTokens(
-      investorAccountId,
-      contractAccountId,
-      tokenId,
-      parseInt(amount)
-    );
-
-  if (!transferResult.success) {
-      // If the error is INVALID_SIGNATURE, the backend cannot sign on behalf of the user.
-      if (transferResult.reason === "INVALID_SIGNATURE" || String(transferResult.error || "").includes("INVALID_SIGNATURE")) {
-        return res.status(400).json({
-          error: "Token transfer requires user signature",
-          reason: "INVALID_SIGNATURE",
-          message: "Please perform the HUSDT transfer from your wallet (frontend) or use token allowances.",
-          instructions: {
-            option1: "Use frontend to call HTS precompile cryptoTransfer (0x167) sending HUSDT to AgriYield contract",
-            option2: "Approve allowance to backend/contract and use approved token transfer flow",
-            note: "After funds arrive at the contract, call AgriYield.invest(farmId, amount) from your wallet"
-          }
-        });
-      }
-      return res.status(500).json({
-        error: "Token transfer failed",
-        details: transferResult.error
-      });
-    }
-
-    console.log("✅ Tokens transferred:", transferResult.transactionId);
-
-    // Step 3: Call contract's invest function
-    console.log("Step 2: Calling invest function...");
-    const investResult = await callInvestFunction(farmId, amount, investorAddress);
-
-    if (!investResult.success) {
-      return res.status(500).json({
-        error: "Investment contract call failed",
-        details: investResult.error,
-        note: "Tokens were transferred but shares were not minted. Please contact support."
-      });
-    }
-
-    console.log("✅ Investment complete:", investResult.transactionId);
-
-    res.json({
-      success: true,
-      transferTxId: transferResult.transactionId,
-      investTxId: investResult.transactionId,
-      message: "Investment successful! You have received your farm shares."
-    });
-  } catch (err) {
-    console.error("Investment error:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // Get token balance (protected route)
 app.get("/api/token/balance", authMiddleware, async (req, res) => {
@@ -509,5 +365,5 @@ app.listen(PORT, () => {
   console.log(`✅ Backend running on http://localhost:${PORT}`);
   if (TOKEN_ID) console.log(`✅ Token ID: ${TOKEN_ID.toString()}`);
   console.log(`✅ MetaMask authentication enabled`);
-  console.log(`✅ Backend-managed token transfers enabled`);
+  console.log(`✅ Frontend-managed investment flow active`);
 });

@@ -101,6 +101,74 @@
         "txHash": "0x2f5c315cb29bc4040e8a42b119e0ec76fa3c67c2ea8a3b603c22c8914d2ca67e",
         "timestamp": 1763761273
       }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 14,
+      "owner": "0.0.6822871",
+      "txHash": "0x0214e863d0b81e51891e9b2974a82363b3e20b3e3e528e6a289aa896828a8567",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 4,
+        "investor": "0x0348deaae8cb335171400bddf87604d2e2162b0f",
+        "amount": "30000000",
+        "shares": 3,
+        "txHash": "0x0214e863d0b81e51891e9b2974a82363b3e20b3e3e528e6a289aa896828a8567",
+        "timestamp": 1763774178
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 25,
+      "owner": "0.0.6822871",
+      "txHash": "0xa76eb01ea7724ef664925a00fa9c9de375e6d25dce8b2002869958b9d55160e3",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x0348DEAAE8cb335171400BddF87604D2E2162b0F",
+        "amount": "200000000",
+        "shares": 2,
+        "txHash": "0xa76eb01ea7724ef664925a00fa9c9de375e6d25dce8b2002869958b9d55160e3",
+        "timestamp": 1763777042
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 27,
+      "owner": "0.0.6822871",
+      "txHash": "0xe05ce86622b07e147366294d8ffba5bb99fd761f200fc497c73d0838f90a39ee",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x0348DEAAE8cb335171400BddF87604D2E2162b0F",
+        "amount": "200000000",
+        "shares": 2,
+        "txHash": "0xe05ce86622b07e147366294d8ffba5bb99fd761f200fc497c73d0838f90a39ee",
+        "timestamp": 1763778054
+      }
+    },
+    {
+      "status": "MINTED",
+      "tokenId": "0.0.7298770",
+      "serial": 28,
+      "owner": "0.0.6822871",
+      "txHash": "0x88331a236c6ca0b049e99aa3325ea624dca4f0f47ccabd8cccd3c17e42b6133f",
+      "transferTxId": "",
+      "metadata": {
+        "type": "INVESTMENT",
+        "farmId": 5,
+        "investor": "0x0348DEAAE8cb335171400BddF87604D2E2162b0F",
+        "amount": "100000000",
+        "shares": 1,
+        "txHash": "0x88331a236c6ca0b049e99aa3325ea624dca4f0f47ccabd8cccd3c17e42b6133f",
+        "timestamp": 1763780094
+      }
     }
   ]
 }

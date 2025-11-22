@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "node --watch src/simpleServer.js",
-    "start": "node src/simpleServer.js"
+    "start": "node src/simpleServer.js",
+    "build": "node -e \"console.log('Backend build step skipped')\""
   },
   "dependencies": {
     "@hashgraph/sdk": "^2.19.0",
