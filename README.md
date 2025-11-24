@@ -160,7 +160,7 @@ Mapped to hackathon requirement of simple buttons triggering NFT minting.
   http://localhost:5173/
 
 ## 🎬 Demo Video  
-Watch our demo (3 minutes): [Insert YouTube/Vimeo/Public link]  
+Watch our demo (3 minutes): [[ Demo](https://youtu.be/acwf8uBW0oM)]  
 This video shows how to signup, invest, claim, view NFTS minted
 
 
